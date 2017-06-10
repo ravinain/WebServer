@@ -1,0 +1,45 @@
+Implementation Covered
+
+1. Listen GET request only.
+2. Fetch contents of directory
+3. Display contents on UI
+4. Navigation from parent to child and vice versa.
+5. Allowing user to change port number and/or root directory.
+
+
+Missing Pieces:
+1. Integration Test cases
+2. Response header attributes needs to be improved.
+3. Missing checkstyle configuration
+4. Used only few Http Response type
+5. Mistakenly used HTTP/1.0
+
+
+Design
+------
+
+HttpServerApplication is an entry point
+        |
+HttpServer (Controller Layer) -> The controller is responsible for processing request and sending response back to client.
+        |
+RequestResponseProcessor (Service Layer) -> The service is responsible for extracting request information from InputStream
+        |                                   and fill it in HttpRequest object. Also, fetch the list of files from requested
+        |                                   location. Prepare response data and send it back to client. This class also validates request data.
+        |
+        | - >    RequestValidator -> validates request content.
+        | - >    ResponseTemplate -> templates to generate response data based on request type.
+                    | - >     ResponseBuilder -> Contains all valid response content.
+        | - >    Context -> Stores HttpRequest and HttpResponse object
+                    | - >    HttpRequest -> Bean class for http request.
+                    | - >    HttpResponse -> Bean class for http response.
+        | - >    ApplicationProperties -> Store application properties. Such as port number, rootDirectory etc.
+
+Other Independent Classes:
+
+Constants -> Store constants, some of the constants can be moved to application.properties file as well
+DateUtils -> Format date object/or convert from long milliseconds to formatted date.
+FileUtils -> File related utilities
+RequestMethod -> Request Method value such as GET. This can be used later on for other method types.
+ResponseCode -> Store Http Response code and string.
+InvalidRequestException -> Custom exception.
+
